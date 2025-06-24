@@ -1,7 +1,7 @@
 ;/*****************************************************************************
-; * @file:    startup_LPC17xx.s
+; * @file:    startup_LPC1768.s
 ; * @purpose: CMSIS Cortex-M3 Core Device Startup File 
-; *           for the NXP LPC17xx Device Series 
+; *           for the NXP LPC1768 Device Series 
 ; * @version: V1.01
 ; * @date:    21. December 2009
 ; *------- <<< Use Configuration Wizard in Context Menu >>> ------------------
