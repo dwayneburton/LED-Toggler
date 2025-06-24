@@ -1,155 +1,175 @@
-;------------------------------------------------------------------------------
-; Purpose: Cortex-M3 Startup File for LPC1768 - Defines vector table, handlers,
-;          and stack/heap memory layout for uVision projects
-;------------------------------------------------------------------------------
-                THUMB
-                PRESERVE8
+;/*****************************************************************************
+; * @file:    startup_LPC17xx.s
+; * @purpose: CMSIS Cortex-M3 Core Device Startup File 
+; *           for the NXP LPC17xx Device Series 
+; * @version: V1.01
+; * @date:    21. December 2009
+; *------- <<< Use Configuration Wizard in Context Menu >>> ------------------
+; *
+; * Copyright (C) 2009 ARM Limited. All rights reserved.
+; * ARM Limited (ARM) is supplying this software for use with Cortex-M3 
+; * processor based microcontrollers.  This file can be freely distributed 
+; * within development tools that are supporting such ARM based processors. 
+; *
+; * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+; * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+; * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+; * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+; * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+; *
+; *****************************************************************************/
 
-;------------------------------------------------------------------------------
-; Section 1: Stack and Heap Configuration
-;------------------------------------------------------------------------------
-Stack_Size      EQU     0x00000200                  ; 512 bytes stack
+
+; <h> Stack Configuration
+;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
+; </h>
+
+Stack_Size      EQU     0x00000200
+
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
 __initial_sp
 
-Heap_Size       EQU     0x00000000                  ; No heap allocated
+
+; <h> Heap Configuration
+;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
+; </h>
+
+Heap_Size       EQU     0x00000000
+
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base
 Heap_Mem        SPACE   Heap_Size
 __heap_limit
 
-;------------------------------------------------------------------------------
-; Section 2: Vector Table at Address 0x00000000
-;------------------------------------------------------------------------------
+
+                PRESERVE8
+                THUMB
+
+
+; Vector Table Mapped to Address 0 at Reset
+
                 AREA    RESET, DATA, READONLY
                 EXPORT  __Vectors
 
-__Vectors       DCD     __initial_sp                ;  0: Initial stack pointer
-                DCD     Reset_Handler               ;  1: Reset Handler
-                DCD     NMI_Handler                 ;  2: NMI Handler
-                DCD     HardFault_Handler           ;  3: Hard Fault Handler
-                DCD     MemManage_Handler           ;  4: MPU Fault Handler
-                DCD     BusFault_Handler            ;  5: Bus Fault Handler
-                DCD     UsageFault_Handler          ;  6: Usage Fault Handler
-                DCD     0                           ;  7: Reserved
-                DCD     0                           ;  8: Reserved
-                DCD     0                           ;  9: Reserved
-                DCD     0                           ; 10: Reserved
-                DCD     SVC_Handler                 ; 11: SVCall Handler
-                DCD     DebugMon_Handler            ; 12: Debug Monitor Handler
-                DCD     0                           ; 13: Reserved
-                DCD     PendSV_Handler              ; 14: PendSV Handler
-                DCD     SysTick_Handler             ; 15: SysTick Handler
+__Vectors       DCD     __initial_sp              ; Top of Stack
+                DCD     Reset_Handler             ; Reset Handler
+                DCD     NMI_Handler               ; NMI Handler
+                DCD     HardFault_Handler         ; Hard Fault Handler
+                DCD     MemManage_Handler         ; MPU Fault Handler
+                DCD     BusFault_Handler          ; Bus Fault Handler
+                DCD     UsageFault_Handler        ; Usage Fault Handler
+                DCD     0                         ; Reserved
+                DCD     0                         ; Reserved
+                DCD     0                         ; Reserved
+                DCD     0                         ; Reserved
+                DCD     SVC_Handler               ; SVCall Handler
+                DCD     DebugMon_Handler          ; Debug Monitor Handler
+                DCD     0                         ; Reserved
+                DCD     PendSV_Handler            ; PendSV Handler
+                DCD     SysTick_Handler           ; SysTick Handler
 
-; External Interrupt Vectors
-                DCD     WDT_IRQHandler
-                DCD     TIMER0_IRQHandler
-                DCD     TIMER1_IRQHandler
-                DCD     TIMER2_IRQHandler
-                DCD     TIMER3_IRQHandler
-                DCD     UART0_IRQHandler
-                DCD     UART1_IRQHandler
-                DCD     UART2_IRQHandler
-                DCD     UART3_IRQHandler
-                DCD     PWM1_IRQHandler
-                DCD     I2C0_IRQHandler
-                DCD     I2C1_IRQHandler
-                DCD     I2C2_IRQHandler
-                DCD     SPI_IRQHandler
-                DCD     SSP0_IRQHandler
-                DCD     SSP1_IRQHandler
-                DCD     PLL0_IRQHandler
-                DCD     RTC_IRQHandler
-                DCD     EINT0_IRQHandler
-                DCD     EINT1_IRQHandler
-                DCD     EINT2_IRQHandler
-                DCD     EINT3_IRQHandler
-                DCD     ADC_IRQHandler
-                DCD     BOD_IRQHandler
-                DCD     USB_IRQHandler
-                DCD     CAN_IRQHandler
-                DCD     DMA_IRQHandler
-                DCD     I2S_IRQHandler
-                DCD     ENET_IRQHandler
-                DCD     RIT_IRQHandler
-                DCD     MCPWM_IRQHandler
-                DCD     QEI_IRQHandler
-                DCD     PLL1_IRQHandler
-                DCD     USBActivity_IRQHandler
-                DCD     CANActivity_IRQHandler
+                ; External Interrupts
+                DCD     WDT_IRQHandler            ; 16: Watchdog Timer
+                DCD     TIMER0_IRQHandler         ; 17: Timer0
+                DCD     TIMER1_IRQHandler         ; 18: Timer1
+                DCD     TIMER2_IRQHandler         ; 19: Timer2
+                DCD     TIMER3_IRQHandler         ; 20: Timer3
+                DCD     UART0_IRQHandler          ; 21: UART0
+                DCD     UART1_IRQHandler          ; 22: UART1
+                DCD     UART2_IRQHandler          ; 23: UART2
+                DCD     UART3_IRQHandler          ; 24: UART3
+                DCD     PWM1_IRQHandler           ; 25: PWM1
+                DCD     I2C0_IRQHandler           ; 26: I2C0
+                DCD     I2C1_IRQHandler           ; 27: I2C1
+                DCD     I2C2_IRQHandler           ; 28: I2C2
+                DCD     SPI_IRQHandler            ; 29: SPI
+                DCD     SSP0_IRQHandler           ; 30: SSP0
+                DCD     SSP1_IRQHandler           ; 31: SSP1
+                DCD     PLL0_IRQHandler           ; 32: PLL0 Lock (Main PLL)
+                DCD     RTC_IRQHandler            ; 33: Real Time Clock
+                DCD     EINT0_IRQHandler          ; 34: External Interrupt 0
+                DCD     EINT1_IRQHandler          ; 35: External Interrupt 1
+                DCD     EINT2_IRQHandler          ; 36: External Interrupt 2
+                DCD     EINT3_IRQHandler          ; 37: External Interrupt 3
+                DCD     ADC_IRQHandler            ; 38: A/D Converter
+                DCD     BOD_IRQHandler            ; 39: Brown-Out Detect
+                DCD     USB_IRQHandler            ; 40: USB
+                DCD     CAN_IRQHandler            ; 41: CAN
+                DCD     DMA_IRQHandler            ; 42: General Purpose DMA
+                DCD     I2S_IRQHandler            ; 43: I2S
+                DCD     ENET_IRQHandler           ; 44: Ethernet
+                DCD     RIT_IRQHandler            ; 45: Repetitive Interrupt Timer
+                DCD     MCPWM_IRQHandler          ; 46: Motor Control PWM
+                DCD     QEI_IRQHandler            ; 47: Quadrature Encoder Interface
+                DCD     PLL1_IRQHandler           ; 48: PLL1 Lock (USB PLL)
+				DCD		USBActivity_IRQHandler    ; USB Activity interrupt to wakeup
+				DCD		CANActivity_IRQHandler    ; CAN Activity interrupt to wakeup
 
-;------------------------------------------------------------------------------
-; Section 3: Optional Code Read Protection Key (CRP)
-;------------------------------------------------------------------------------
+
                 IF      :LNOT::DEF:NO_CRP
                 AREA    |.ARM.__at_0x02FC|, CODE, READONLY
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 
-;------------------------------------------------------------------------------
-; Section 4: Main Program Entry Point
-;------------------------------------------------------------------------------
+
                 AREA    |.text|, CODE, READONLY
+
+
+; Reset Handler
 
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
                 IMPORT  __MAIN
-                LDR     R0, =__MAIN               ; Load address of main
-                BX      R0                        ; Branch to main
+                LDR     R0, =__MAIN
+                BX      R0
                 ENDP
 
-;------------------------------------------------------------------------------
-; Section 5: Default Exception Handlers (infinite loop placeholders)
-;------------------------------------------------------------------------------
+
+; Dummy Exception Handlers (infinite loops which can be modified)                
+
 NMI_Handler     PROC
                 EXPORT  NMI_Handler               [WEAK]
                 B       .
                 ENDP
-
-HardFault_Handler PROC
+HardFault_Handler\
+                PROC
                 EXPORT  HardFault_Handler         [WEAK]
                 B       .
                 ENDP
-
-MemManage_Handler PROC
+MemManage_Handler\
+                PROC
                 EXPORT  MemManage_Handler         [WEAK]
                 B       .
                 ENDP
-
-BusFault_Handler PROC
+BusFault_Handler\
+                PROC
                 EXPORT  BusFault_Handler          [WEAK]
                 B       .
                 ENDP
-
-UsageFault_Handler PROC
+UsageFault_Handler\
+                PROC
                 EXPORT  UsageFault_Handler        [WEAK]
                 B       .
                 ENDP
-
 SVC_Handler     PROC
                 EXPORT  SVC_Handler               [WEAK]
                 B       .
                 ENDP
-
-DebugMon_Handler PROC
+DebugMon_Handler\
+                PROC
                 EXPORT  DebugMon_Handler          [WEAK]
                 B       .
                 ENDP
-
 PendSV_Handler  PROC
                 EXPORT  PendSV_Handler            [WEAK]
                 B       .
                 ENDP
-
 SysTick_Handler PROC
                 EXPORT  SysTick_Handler           [WEAK]
                 B       .
                 ENDP
 
-;------------------------------------------------------------------------------
-; Section 6: External Interrupt Default Handlers (all branch to infinite loop)
-;------------------------------------------------------------------------------
 Default_Handler PROC
 
                 EXPORT  WDT_IRQHandler            [WEAK]
@@ -185,8 +205,8 @@ Default_Handler PROC
                 EXPORT  MCPWM_IRQHandler          [WEAK]
                 EXPORT  QEI_IRQHandler            [WEAK]
                 EXPORT  PLL1_IRQHandler           [WEAK]
-                EXPORT  USBActivity_IRQHandler    [WEAK]
-                EXPORT  CANActivity_IRQHandler    [WEAK]
+				EXPORT  USBActivity_IRQHandler    [WEAK]
+				EXPORT  CANActivity_IRQHandler    [WEAK]
 
 WDT_IRQHandler           
 TIMER0_IRQHandler         
@@ -214,37 +234,47 @@ ADC_IRQHandler
 BOD_IRQHandler            
 USB_IRQHandler            
 CAN_IRQHandler            
-DMA_IRQHandler            
+DMA_IRQHandler          
 I2S_IRQHandler            
-ENET_IRQHandler           
-RIT_IRQHandler            
-MCPWM_IRQHandler          
+ENET_IRQHandler       
+RIT_IRQHandler          
+MCPWM_IRQHandler             
 QEI_IRQHandler            
 PLL1_IRQHandler           
-USBActivity_IRQHandler    
-CANActivity_IRQHandler    
+USBActivity_IRQHandler
+CANActivity_IRQHandler
 
-                B       .           ; Infinite loop for all unhandled IRQs
+                B       .
+
                 ENDP
+
 
                 ALIGN
 
-;------------------------------------------------------------------------------
-; Section 7: Stack/Heap Initialization (Microlib or Standard)
-;------------------------------------------------------------------------------
+
+; User Initial Stack & Heap
+
                 IF      :DEF:__MICROLIB
+                
                 EXPORT  __initial_sp
                 EXPORT  __heap_base
                 EXPORT  __heap_limit
+                
                 ELSE
+                
+       ;         IMPORT  __use_two_region_memory
                 EXPORT  __user_initial_stackheap
 __user_initial_stackheap
-                LDR     R0, =Heap_Mem
+
+                LDR     R0, =  Heap_Mem
                 LDR     R1, =(Stack_Mem + Stack_Size)
-                LDR     R2, =(Heap_Mem + Heap_Size)
-                LDR     R3, =Stack_Mem
+                LDR     R2, = (Heap_Mem +  Heap_Size)
+                LDR     R3, = Stack_Mem
                 BX      LR
+
                 ALIGN
+
                 ENDIF
+
 
                 END
